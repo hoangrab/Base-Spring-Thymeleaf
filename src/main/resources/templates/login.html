@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragmernts :: header('Login')">
+</head>
+<body>
+  <div class="container-fluid text-center">
+
+      <div>
+          <img th:src="@{/static/img/biglogo.png}"/>
+
+          <div th:if="${param.error}">
+              <p class="text-danger" style="text-align: center">[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]</p>
+          </div>
+          <div th:if="${param.logout}">
+              <p class="text-warning text-center">You hava logout</p>
+          </div>
+
+          <form th:action="@{/login}" th:method="post" style="max-width: 350px; margin: 0 auto">
+              <div class="border border-secondary rounded p-3">
+                  <p>Access to Shopme Control Panel</p>
+                  <p>
+                      <input type="email" name="username" class="form-control" placeholder="E-mail" required>
+                  </p>
+                  <p>
+                      <input type="password" name="password" class="form-control" placeholder="Password" required>
+                  </p>
+                  <p>
+                      <input type="submit" th:value="Login" class="btn btn-primary">
+                  </p>
+              </div>
+          </form>
+      </div>
+
+
+      <div>
+          <p>Shopme and no pro and scheduma</p>
+      </div>
+  </div>
+</body>
+</html>

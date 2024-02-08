@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragmernts :: header('Form')">
+</head>
+<body>
+  <div class="container-fluid">
+
+      <div>
+          <h2>Manage User | [[${titlePage}]]</h2>
+      </div>
+
+      <form id="formthem" th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto" th:object="${users}" onsubmit="return checkEmail()"
+      enctype="multipart/form-data">
+          <div class="border border-secondary rounded p-3">
+
+              <input type="hidden" th:field="*{id}" />
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">E-mail</label>
+                  <div class="col-sm-8">
+                      <input id="email" type="email" class="form-control" required th:field="*{email}"/>
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label" >Password</label>
+                  <div class="col-sm-8">
+
+                      <input th:if="${users.id == 0}" type="password" class="form-control" required th:field="*{password}" />
+
+                      <input th:if="${users.id != 0}" type="password" class="form-control" th:field="*{password}"
+                             placeholder="Không cần nhập nếu bạn muốn giữ nguyên mât khẩu" />
+
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">First Name</label>
+                  <div class="col-sm-8">
+                      <input type="text" class="form-control" th:field="*{firstName}" />
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Last Name</label>
+                  <div class="col-sm-8">
+                      <input type="text" class="form-control" th:field="*{lastName}" />
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Roles</label>
+                  <div class="col-sm-8">
+                      <th:block th:each="role : ${listRoles}">
+                          <input class="m-2" type="checkbox" th:field="*{roleLists}" th:value="${role.id}" th:text="${role.name}"/>
+                          &nbsp;--<small>[[${role.description}]]</small></br>
+                      </th:block>
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Enabled</label>
+                  <div class="col-xl-2">
+                      <input type="checkbox" class="form-check" th:field="*{enabled}"/>
+                  </div>
+              </div>
+
+              <div class="form-group row">
+                  <label class="col-sm-4 col-form-label">Photo</label>
+                  <div class="col-sm-8">
+                      <input type="file" id="fileImg" th:name="thumbnail"/>
+                      <img class="img-fluid col-sm-3" th:src="@{'/' + ${users.pathPhoto} +''}" id="thumbnail" alt="anhrac"/>
+                  </div>
+              </div>
+
+
+
+              <div class="text-center">
+                  <input type="submit"  value="Save" class="btn btn-primary" />
+                  <input type="button" value="Cancel" class="btn btn-secondary" onclick="chuyenhuong()" />
+              </div>
+
+          </div>
+      </form>
+
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="100" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"></h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+
+      <div class="text-center">
+          <p>Shopme and no pro and scheduma</p>
+      </div>
+  </div>
+
+</body>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#fileImg").change(function () {
+            const filesize = this.files[0];
+            if(filesize.size > 1048576) {
+                alert("file lon hon 1mb");
+                this.setCustomValidity("File over 1mb, please choose image under 1mb!!!");
+                this.reportValidity();
+            }
+            else {
+                showImageThubnail(this);
+            }
+        })
+    });
+
+    function showImageThubnail(fileInput) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            $("#thumbnail").attr("src",e.target.result);
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function chuyenhuong() {
+        window.location.href = "/home"
+    }
+
+    function checkEmail() {
+        if([[${users.id != 0}]]) {
+            document.getElementById("formthem").submit();
+            return;
+        }
+        const url = "/api/checkem?em=" + document.getElementById("email").value;
+        $.get(url, (response) => {
+            console.log(response);
+            if(response === true) {
+                $(".modal-title").text("Warming");
+                $(".modal-body").text("Email nay da ton tai roi!!!")
+                $("#exampleModal").modal();
+                return false;
+            }
+            else {
+                document.getElementById("formthem").submit()
+            }
+        });
+        return false;
+    }
+</script>
+</html>

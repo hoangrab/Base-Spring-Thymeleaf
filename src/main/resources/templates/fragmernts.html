@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header(Title)">
+    <meta charset="UTF-8">
+    <title>[[${Title}]]</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/fontawesome/all.min.css}">
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/common.js}"></script>
+</head>
+<body>
+  <th th:fragment="columns(fieldName,direcName,columnName,sortName)">
+    <a class="text-white text-decoration-none" th:href="@{'/users/page/1?sortField=' +${fieldName} +  '&sortDirec=' + ${direcName=='asc' ? 'des' : 'asc'}}"> [[${columnName}]] <i th:if="${sortName==fieldName}" th:class="${direcName == 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down'}"></i> </a>
+  </th>
+
+  <div th:fragment="navbar">
+      <form id="formlout" th:action="@{/logout}" name="formlout" method="post" hidden="hidden"></form>
+
+      <nav class="navbar navbar-expand bg-dark navbar-dark">
+          <a class="navbar-brand" th:href="@{/}">
+              <img th:src="@{/static/img/anh1.png}"/>
+          </a>
+          <div class="collapse navbar-collapse">
+              <ul class="navbar-nav">
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/users}">Users</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/categories}">Categories</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/brands}">Brands</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/products}">Products</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/customers}">Customers</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/shipping}">Shipping</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/orders}">Orders</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/sales}">Sales Report</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/articles}">Articles</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/menus}">Menus</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" th:href="@{/settings}">Settings</a>
+                  </li>
+                  <li class="nav-item text-white">
+                      <span class="fas fa-user"></span>
+                  </li>
+                  &nbsp;
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" data-toggle="dropdown"
+                         sec:authentication="principal.fullName"></a>
+                      <div class="dropdown-menu" >
+                          <a class="dropdown-item" id="lout">Logout</a>
+                      </div>
+                  </li>
+              </ul>
+          </div>
+      </nav>
+  </div>
+
+</body>
+</html>

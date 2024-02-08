@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head th:replace="fragmernts :: header('User')">
+</head>
+<body>
+  <div class="container-fluid">
+
+      <div th:replace="fragmernts :: navbar">
+
+      </div>
+
+      <div>
+          <h2>Manage Users</h2>
+          <a th:href="@{/users/new}">Create New User</a>
+      </div>
+
+      <div th:if="${message != null}" >
+          <h5 class="alert alert-success text-center">[[${message}]]</h5>
+      </div>
+
+
+      <div>
+
+          <form th:action="@{/users/page/1}" class="form-inline m-3">
+              <input type="hidden" name="sortField" value="firstName">
+              <input type="hidden" name="sortDirec" value="asc">
+              Filter:&nbsp;
+              <input type="search" id="keyword" name="keyword" class="form-control" th:value="${keyword}" required/>
+              &nbsp;&nbsp;
+              <input type="submit" value="Search" class="btn btn-primary"/>
+              &nbsp;&nbsp;
+              <input type="button" id="clear" value="Clear" class="btn btn-secondary">
+
+          </form>
+      </div>
+
+      <div>
+          <table class="table table-responsive-xl table-bordered table-striped table-hover">
+              <thead class="thead-dark">
+                <tr>
+                    <th>User ID</th>
+                    <th>Photos</th>
+                    <th th:replace="fragmernts :: columns('email',${sortDirec},'Email',${sortField})">
+                    </th>
+                    <th th:replace="fragmernts :: columns('firstName',${sortDirec},'First Name',${sortField})">
+                    </th>
+                    <th>Last Name</th>
+                    <th>Roles</th>
+                    <th>Enable</th>
+                    <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr th:each="user : ${listUsers}">
+                    <td>[[${user.id}]]</td>
+                    <td>
+                        <img style="width: 75px;height: 75px" th:src="@{'/'+${user.pathPhoto}}">
+                    </td>
+                    <td>[[${user.email}]]</td>
+                    <td>[[${user.firstName}]]</td>
+                    <td>[[${user.lastName}]]</td>
+                    <td>[[${user.layRole()}]]</td>
+                    <td>[[${user.enabled}]]</td>
+                    <td>
+                        <a th:href="@{'/users/update/' + ${user.id}}">
+                            <i class="fa fa-edit font-size-20"></i>
+                        </a>
+                        &nbsp;
+                        <a th:href="@{'/users/delete/' + ${user.id}}">
+                            <i class="fa fa-remove font-size-20"></i>
+                        </a>
+                    </td>
+                </tr>
+              </tbody>
+          </table>
+      </div>
+
+      <div th:if="${totalItem > 0}">
+          <h6 class="text-center">Show [[${startCount}]] to [[${endCount}]] of [[${totalItem}]] </h6>
+      </div>
+
+      <div th:if="${totalItem == 0}">
+          <p class="text-center font-weight-bolder">No user is find</p>
+      </div>
+
+      <div th:if="${totalItem > 0}" >
+          <ul class="pagination justify-content-center">
+              <li th:class="${page==1 ?'page-item disabled' : 'page-item'}"><a class="page-link" th:href="@{'/users/page/1?sortField=' + ${sortField} + '&sortDirec=' + ${sortDirec}}">First</a></li>
+              <li th:class="${page==1 ?'page-item disabled' : 'page-item'}"><a class="page-link" th:href="@{'/users/page/' + ${page-1} +'?sortField=' + ${sortField} + '&sortDirec=' + ${sortDirec}}">Previous</a></li>
+
+              <th:block th:each="i : ${#numbers.sequence(1,totalPage)}">
+                  <li th:class="${i==page ? 'page-item active' : 'page-item'}">
+                      <a class="page-link" th:href="@{'/users/page/' + ${i} +'?sortField=' + ${sortField} + '&sortDirec=' + ${sortDirec}}">[[${i}]]</a>
+                  </li>
+              </th:block>
+
+              <li th:class="${page==totalPage ? 'page-item disabled' : 'page-item'}"><a class="page-link" th:href="@{'/users/page/' + ${page+1} +'?sortField=' + ${sortField} + '&sortDirec=' + ${sortDirec}}">Next</a></li>
+              <li th:class="${page==totalPage ? 'page-item disabled' : 'page-item'}"><a class="page-link" th:href="@{'/users/page/' + ${totalPage} +'?sortField=' + ${sortField} + '&sortDirec=' + ${sortDirec}}">Last</a></li>
+          </ul>
+      </div>
+
+      <div class="text-center">
+          <p>Shopme and no pro and scheduma</p>
+      </div>
+  </div>
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#clear").click(function () {
+            $("#keyword").val("");
+            window.location.href = '/users'
+        })
+    })
+</script>
+
+</html>
